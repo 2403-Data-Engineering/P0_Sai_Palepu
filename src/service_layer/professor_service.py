@@ -29,10 +29,17 @@ class ProfessorService:
             return None
         for k, v in new_dict.items():
             if not v:
-                new_dict[k] = old_professor[k]
-        updated_professor = self.p_dao.update_professor(Professor(**new_dict))
-        print("STUDENT UPDATED!")
-        print(updated_professor)
+                new_dict[k] = getattr(old_professor,k)
+        try:
+            updated_professor = self.p_dao.update_professor(Professor(**new_dict))
+            print("Professor UPDATED!")
+            print("Updated professor: " + str(updated_professor))
+        except mysql.connector.Error as err:
+            if err.errno == errorcode.ER_DUP_ENTRY:
+                print("Duplicate email detected. Please enter in a unique email.")
+            else:
+                print(f"Database error: {err}")
+        
     def delete(self, id:int):
         p = self.p_dao.delete_professor(id)
         if not p:

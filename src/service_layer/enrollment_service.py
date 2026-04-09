@@ -7,8 +7,9 @@ class EnrollmentService:
     def enroll(self, c_id:int, s_id:int):
         try:
             self.e_dao.enroll_student(c_id, s_id)
-        except:
-            print("That student is already enrolled in that course")
+        except mysql.connector.Error as err:
+            if err.errno == errorcode.ER_DUP_ENTRY:
+                print("That student is already enrolled in that course")
     def enrollment_report(self,s_id):
         student, l = self.e_dao.enrollment_report_list(s_id)
         return student, l

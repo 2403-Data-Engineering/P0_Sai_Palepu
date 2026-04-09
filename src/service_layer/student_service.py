@@ -36,10 +36,16 @@ class StudentService:
             return None
         for k, v in new_dict.items():
             if not v:
-                new_dict[k] = old_student[k]
-        updated_student = self.s_dao.update_student(Student(**new_dict))
-        print("STUDENT UPDATED!")
-        print(updated_student)
+                new_dict[k] = getattr(old_student,k)
+        try:
+            updated_student = self.s_dao.update_student(Student(**new_dict))
+            print("STUDENT UPDATED!")
+            print("Updated Student: " + str(updated_student))
+        except mysql.connector.Error as err:
+            if err.errno == errorcode.ER_DUP_ENTRY:
+                print("Duplicate email detected. Please enter in a unique email.")
+            else:
+                print(f"Database error: {err}")
 
     def view_all_students(self):
         l = self.s_dao.select_all_students()

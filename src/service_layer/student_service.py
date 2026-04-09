@@ -52,11 +52,17 @@ class StudentService:
         return l
 
     def get_student_by_id(self, id:int):
-        print(self.s_dao.select_student_by_id(id))
+        try:
+            print(self.s_dao.select_student_by_id(id))
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
         
     def delete_student(self, id:int):
-        s = self.s_dao.delete_student(id)
-        if not s:
-            print("That student doesn't exist in the database")
-        else:
-            print("Deleted this student: " + str(s))
+        try:
+            s = self.s_dao.delete_student(id)
+            if not s:
+                print("That student doesn't exist in the database")
+            else:
+                print("Deleted this student: " + str(s))
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")

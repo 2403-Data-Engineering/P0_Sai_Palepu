@@ -46,11 +46,10 @@ class CourseDao:
         with get_connection() as conn:
             curso = conn.cursor(dictionary=True)
             curso.execute("SELECT * FROM course WHERE course_id = %(id)s", {"id": c_id})
-            for row in curso:
-                course = row
-                if not course:
-                    print("That course doesn't exist. Please try again")
-                    return None
+            course = curso.fetchone()
+            if course is None:
+                print("That course doesn't exist. Please try again")
+                return None, None
             curso1 = conn.cursor(dictionary=True, buffered=True)
             curso1.execute("SELECT student_id FROM course_list WHERE course_id = %(id)s", {"id": c_id})
             curso2 = conn.cursor(dictionary=True, buffered=True)

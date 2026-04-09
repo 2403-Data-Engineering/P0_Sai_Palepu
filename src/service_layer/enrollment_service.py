@@ -11,5 +11,12 @@ class EnrollmentService:
             if err.errno == errorcode.ER_DUP_ENTRY:
                 print("That student is already enrolled in that course")
     def enrollment_report(self,s_id):
-        student, l = self.e_dao.enrollment_report_list(s_id)
-        return student, l
+        try:
+            student, l = self.e_dao.enrollment_report_list(s_id)
+            if student is None:
+                return None, None
+            
+            return student, l
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
+            return None, None

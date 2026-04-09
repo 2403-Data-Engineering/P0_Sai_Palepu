@@ -136,6 +136,9 @@ class ProfessorSummaryReportMenu(Menu):
                 case "n":
                     print("Please re-enter the information")
         prof, c_dict = self.terminal.professor_service.ps_report(p_id)
+        if prof is None:
+            print("❌ Professor not found. Please try again.")
+            return
         from mdutils.mdutils import MdUtils
 
         # Initialize the file

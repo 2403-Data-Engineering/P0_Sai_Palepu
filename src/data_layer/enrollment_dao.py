@@ -14,11 +14,9 @@ class EnrollmentDao:
             l = []
             curso = conn.cursor(dictionary=True)
             curso.execute("SELECT * FROM student WHERE student_id = %(student_id)s", {"student_id": s_id})
-            for row in curso:
-                student = row
-                if not student:
-                    print("That student doesn't exist. Please try again")
-                    return None
+            student = curso.fetchone()
+            if student is None:
+                 return None, None
             curso1 = conn.cursor(dictionary=True, buffered=True)
             curso1.execute("SELECT * FROM course_list WHERE student_id = %(student_id)s",
                           {"student_id":s_id})

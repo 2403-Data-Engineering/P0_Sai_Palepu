@@ -23,14 +23,15 @@ class ProfessorService:
                 print(f"Database error: {err}")
         return None
     def update(self, new_dict: dict) -> None:
-        old_professor = self.p_dao.select_professor_by_id(new_dict["professor_id"])
-        if not old_professor:
-            print("That professor doesn't exist. Please try again")
-            return None
-        for k, v in new_dict.items():
-            if not v:
-                new_dict[k] = getattr(old_professor,k)
         try:
+            old_professor = self.p_dao.select_professor_by_id(new_dict["professor_id"])
+            if not old_professor:
+                print("That professor doesn't exist. Please try again")
+                return None
+            for k, v in new_dict.items():
+                if not v:
+                    new_dict[k] = getattr(old_professor,k)
+        
             updated_professor = self.p_dao.update_professor(Professor(**new_dict))
             print("Professor UPDATED!")
             print("Updated professor: " + str(updated_professor))
@@ -41,14 +42,27 @@ class ProfessorService:
                 print(f"Database error: {err}")
         
     def delete(self, id:int):
-        p = self.p_dao.delete_professor(id)
-        if not p:
-            print("That professor doesn't exist in the database")
-        else:
-            print("Deleted this professor: " + str(p))
+        try:
+            p = self.p_dao.delete_professor(id)
+            if not p:
+                print("That professor doesn't exist in the database")
+            else:
+                print("Deleted this professor: " + str(p))
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
+
     def ps_report(self,p_id:int):
-        professor, ce_dict = self.p_dao.ps_report(p_id)
-        return professor, ce_dict
+        try:
+            professor, ce_dict = self.p_dao.ps_report(p_id)
+
+            if professor is None:
+                return None, None
+
+            return professor, ce_dict
+
+        except mysql.connector.Error as err:
+            print(f"Database error: {err}")
+            return None, None
     def view_all_profs(self):
         l = self.p_dao.select_all_professors()
         return l

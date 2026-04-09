@@ -48,6 +48,9 @@ class StudentEnrollmentReportMenu(Menu):
                 case "n":
                     print("Please re-enter the information")
         student, l = self.terminal.enrollment_service.enrollment_report(s_id)
+        if student is None:
+            print("❌ Student not found. Please try again.")
+            return
         from mdutils.mdutils import MdUtils
 
         # Initialize the file

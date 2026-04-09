@@ -124,6 +124,9 @@ class ViewAllStudentsEnrolledInCourseMenu(Menu):
                     print("Please re-enter the information")
                     
         course, students = self.terminal.course_service.vasec(id)
+        if course is None:
+            print("❌ Course not found. Please try again.")
+            return
         print()
         print("Course Name: " + str(course["course_name"]))
         print("-" * 40)

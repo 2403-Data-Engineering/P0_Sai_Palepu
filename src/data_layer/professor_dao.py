@@ -53,11 +53,12 @@ class ProfessorDao:
         with get_connection() as conn:
             curso = conn.cursor(dictionary=True)
             curso.execute("SELECT * FROM professor WHERE professor_id = %(p_id)s", {"p_id": p_id})
-            for row in curso:
-                professor = row
-                if not professor:
-                    print("That student doesn't exist. Please try again")
-                    return None
+            professor = curso.fetchone()
+
+            if professor is None:
+                    return None, None  # clean, consistent return
+                    #print("That professor doesn't exist. Please try again")
+
             curso1 = conn.cursor(dictionary=True)
             curso1.execute("SELECT c.course_name, s.* FROM course c " \
                 "INNER JOIN course_list cl on c.course_id  = cl.course_id " \
